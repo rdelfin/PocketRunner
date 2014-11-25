@@ -3,19 +3,15 @@ package com.foxtailgames.pocketrunner;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
@@ -53,7 +49,7 @@ public class SettingsActivity extends PreferenceActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setupActionBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (getActionBar() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             // Show the Up button in the action bar.
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -103,23 +99,39 @@ public class SettingsActivity extends PreferenceActivity {
 
         // Add 'notifications' preferences, and a corresponding header.
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_notifications);
+        fakeHeader.setTitle(R.string.pref_header_alarm);
         getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_notification);
-
-        // Add 'data and sync' preferences, and a corresponding header.
-        fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_data_sync);
-        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_data_sync);
+        addPreferencesFromResource(R.xml.pref_alarm);
 
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
-        bindPreferenceSummaryToValue(findPreference("example_text"));
-        bindPreferenceSummaryToValue(findPreference("example_list"));
-        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+        bindPreferenceSummaryToValue(findPreference("lap_length_input"));
+        bindPreferenceSummaryToValue(findPreference("units_list"));
+        bindPreferenceSummaryToValue(findPreference("distance_for_alarm"));
+        bindPreferenceSummaryToValue(findPreference("time_hours_for_alarm"));
+        bindPreferenceSummaryToValue(findPreference("time_minutes_for_alarm"));
+        bindPreferenceSummaryToValue(findPreference("time_seconds_for_alarm"));
+
+        //Set initial disabled/enabled for both time preferences
+        boolean isChecked = ((CheckBoxPreference)findPreference("use_distance")).isChecked();
+        findPreference("time_hours_for_alarm").setEnabled(!isChecked);
+        findPreference("time_minutes_for_alarm").setEnabled(!isChecked);
+        findPreference("time_seconds_for_alarm").setEnabled(!isChecked);
+
+        //Set action for the distance for the use distance checkbox
+        findPreference("use_distance").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                boolean newVal = (Boolean)newValue;
+
+                findPreference("time_hours_for_alarm").setEnabled(!newVal);
+                findPreference("time_minutes_for_alarm").setEnabled(!newVal);
+                findPreference("time_seconds_for_alarm").setEnabled(!newVal);
+
+                return true;
+            }
+        });
     }
 
     /**
@@ -184,28 +196,6 @@ public class SettingsActivity extends PreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue)) {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(null);
-                    } else {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone.getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
-
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
@@ -251,8 +241,8 @@ public class SettingsActivity extends PreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference("lap_length_input"));
+            bindPreferenceSummaryToValue(findPreference("units_list"));
         }
     }
 
@@ -261,36 +251,41 @@ public class SettingsActivity extends PreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
+    public static class AlarmPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
+            addPreferencesFromResource(R.xml.pref_alarm);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        }
-    }
+            bindPreferenceSummaryToValue(findPreference("distance_for_alarm"));
+            bindPreferenceSummaryToValue(findPreference("time_hours_for_alarm"));
+            bindPreferenceSummaryToValue(findPreference("time_minutes_for_alarm"));
+            bindPreferenceSummaryToValue(findPreference("time_seconds_for_alarm"));
 
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+            //Set initial disabled/enabled for both time preferences
+            boolean isChecked = ((CheckBoxPreference)findPreference("use_distance")).isChecked();
+            findPreference("time_hours_for_alarm").setEnabled(!isChecked);
+            findPreference("time_minutes_for_alarm").setEnabled(!isChecked);
+            findPreference("time_seconds_for_alarm").setEnabled(!isChecked);
+
+            //Set action for the distance for the use distance checkbox
+            findPreference("use_distance").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean newVal = (Boolean)newValue;
+
+                    findPreference("time_hours_for_alarm").setEnabled(!newVal);
+                    findPreference("time_minutes_for_alarm").setEnabled(!newVal);
+                    findPreference("time_seconds_for_alarm").setEnabled(!newVal);
+
+                    return true;
+                }
+            });
         }
     }
 }
