@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.foxtailgames.pocketrunner.RunActivity">
+
+    <Button
+        android:id="@+id/stop_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stop"
+        android:layout_margin="@dimen/stop_border"
+        android:padding="@dimen/stop_padding"
+        android:textSize="@dimen/extra_large_font_size"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/stop_button" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/zero_time"
+        android:textSize="@dimen/extra_large_font_size"
+        android:typeface="monospace"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/time_margin"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/average_speed"
+        android:textSize="@dimen/subtitle_font_size"
+        android:layout_marginTop="@dimen/average_speed_title_top_margin"
+        android:layout_marginBottom="@dimen/average_speed_title_bottom_margin" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/default_average_speed"
+        android:textSize="@dimen/title_font_size"
+        android:padding="@dimen/average_speed_padding"
+        android:background="@color/average_speed_background"
+        android:layout_marginTop="@dimen/average_speed_top_margin"
+        android:layout_marginBottom="@dimen/average_speed_bottom_margin" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/lap_button_margin"
+        android:paddingLeft="@dimen/lap_button_horizontal_padding"
+        android:paddingRight="@dimen/lap_button_horizontal_padding"
+        android:paddingBottom="@dimen/lap_button_vertical_padding"
+        android:paddingTop="@dimen/lap_button_vertical_padding"
+        android:text="@string/lap"
+        android:textSize="@dimen/extra_large_font_size"
+        android:background="@color/lap_button_background"/>
+
+</LinearLayout>

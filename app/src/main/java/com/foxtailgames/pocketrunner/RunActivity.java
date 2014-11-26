@@ -1,26 +1,30 @@
 package com.foxtailgames.pocketrunner;
 
-import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Button;
 
 
-public class MainActivity extends ActionBarActivity {
+public class RunActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_run);
+
+        //Property android:text_all_caps only works in Android API Level 14 and above
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            ((Button)findViewById(R.id.stop_button)).setAllCaps(false);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_run, menu);
         return true;
     }
 
@@ -33,18 +37,9 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            startActivity(intent);
             return true;
-        } else if(id == R.id.action_start_run) {
-            startRun(null);
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void startRun(View view) {
-        Intent intent = new Intent(getApplicationContext(), RunActivity.class);
-        startActivity(intent);
     }
 }

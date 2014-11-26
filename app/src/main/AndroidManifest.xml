@@ -24,6 +24,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.foxtailgames.pocketrunner.MainActivity" />
         </activity>
+        <activity
+            android:name="com.foxtailgames.pocketrunner.RunActivity"
+            android:label="@string/title_activity_run"
+            android:parentActivityName="com.foxtailgames.pocketrunner.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.foxtailgames.pocketrunner.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
