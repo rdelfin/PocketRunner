@@ -18,4 +18,5 @@
     <dimen name="lap_button_margin">10dp</dimen>
     <dimen name="lap_button_vertical_padding">20dp</dimen>
     <dimen name="lap_button_horizontal_padding">50dp</dimen>
+    <dimen name="portion_done_text_margin">15dp</dimen>
 </resources>

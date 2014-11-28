@@ -1,23 +1,27 @@
 package com.foxtailgames.pocketrunner;
 
-import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 
 
 public class RunActivity extends ActionBarActivity {
+
+    boolean running, started;
+    RunManager runManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run);
-
-        //Property android:text_all_caps only works in Android API Level 14 and above
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-            ((Button)findViewById(R.id.stop_button)).setAllCaps(false);
+        running = false;
+        started = false;
+        runManager = new RunManager(getApplicationContext(), (Chronometer)findViewById(R.id.chrono_label));
+        updateButtonsText();
     }
 
 
@@ -41,5 +45,25 @@ public class RunActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void lapClicked(View view) {
+        runManager.lapClicked();
+        updateButtonsText();
+    }
+
+    public void stopClicked(View view) {
+        runManager.stopClicked();
+        updateButtonsText();
+    }
+
+    private void updateButtonsText() {
+        if(runManager.showStop()) {
+            ((Button)findViewById(R.id.stop_button)).setText(getString(R.string.stop));
+            ((Button)findViewById(R.id.lap_button)).setText(getString(R.string.lap));
+        } else {
+            ((Button)findViewById(R.id.stop_button)).setText(getString(R.string.start));
+            ((Button)findViewById(R.id.lap_button)).setText(getString(R.string.done));
+        }
     }
 }

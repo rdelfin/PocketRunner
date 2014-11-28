@@ -1,13 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:key="use_distance"
+        android:key="@string/use_distance_key"
         android:title="@string/use_distance"
         android:defaultValue="true"
         android:summary="@string/use_distance_summary" />
 
     <EditTextPreference
-        android:dependency="use_distance"
-        android:key="distance_for_alarm"
+        android:dependency="@string/use_distance_key"
+        android:key="@string/distance_for_alarm_key"
         android:title="@string/distance"
         android:defaultValue="10"
         android:selectAllOnFocus="true"
@@ -16,7 +16,7 @@
         android:maxLines="1"/>
 
     <EditTextPreference
-        android:key="time_hours_for_alarm"
+        android:key="@string/time_hours_for_alarm_key"
         android:title="@string/time_hours"
         android:defaultValue="1"
         android:selectAllOnFocus="true"
@@ -25,7 +25,7 @@
         android:maxLines="1"/>
 
     <EditTextPreference
-        android:key="time_minutes_for_alarm"
+        android:key="@string/time_minutes_for_alarm_key"
         android:title="@string/time_minutes"
         android:defaultValue="1"
         android:selectAllOnFocus="true"
@@ -34,7 +34,7 @@
         android:maxLines="1"/>
 
     <EditTextPreference
-        android:key="time_seconds_for_alarm"
+        android:key="@string/time_seconds_for_alarm_key"
         android:title="@string/time_seconds"
         android:defaultValue="0"
         android:selectAllOnFocus="true"

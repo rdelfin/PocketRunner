@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -14,6 +15,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.widget.Toast;
 
 
 import java.util.List;
@@ -106,28 +108,28 @@ public class SettingsActivity extends PreferenceActivity {
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
-        bindPreferenceSummaryToValue(findPreference("lap_length_input"));
-        bindPreferenceSummaryToValue(findPreference("units_list"));
-        bindPreferenceSummaryToValue(findPreference("distance_for_alarm"));
-        bindPreferenceSummaryToValue(findPreference("time_hours_for_alarm"));
-        bindPreferenceSummaryToValue(findPreference("time_minutes_for_alarm"));
-        bindPreferenceSummaryToValue(findPreference("time_seconds_for_alarm"));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.lap_length_input_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.units_list_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.distance_for_alarm_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.time_hours_for_alarm_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.time_minutes_for_alarm_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.time_seconds_for_alarm_key)));
 
         //Set initial disabled/enabled for both time preferences
-        boolean isChecked = ((CheckBoxPreference)findPreference("use_distance")).isChecked();
-        findPreference("time_hours_for_alarm").setEnabled(!isChecked);
-        findPreference("time_minutes_for_alarm").setEnabled(!isChecked);
-        findPreference("time_seconds_for_alarm").setEnabled(!isChecked);
+        boolean isChecked = ((CheckBoxPreference)findPreference(getString(R.string.use_distance_key))).isChecked();
+        findPreference(getString(R.string.time_hours_for_alarm_key)).setEnabled(!isChecked);
+        findPreference(getString(R.string.time_minutes_for_alarm_key)).setEnabled(!isChecked);
+        findPreference(getString(R.string.time_seconds_for_alarm_key)).setEnabled(!isChecked);
 
         //Set action for the distance for the use distance checkbox
-        findPreference("use_distance").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        findPreference(getString(R.string.use_distance_key)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 boolean newVal = (Boolean)newValue;
 
-                findPreference("time_hours_for_alarm").setEnabled(!newVal);
-                findPreference("time_minutes_for_alarm").setEnabled(!newVal);
-                findPreference("time_seconds_for_alarm").setEnabled(!newVal);
+                findPreference(getString(R.string.time_hours_for_alarm_key)).setEnabled(!newVal);
+                findPreference(getString(R.string.time_minutes_for_alarm_key)).setEnabled(!newVal);
+                findPreference(getString(R.string.time_seconds_for_alarm_key)).setEnabled(!newVal);
 
                 return true;
             }
@@ -201,6 +203,23 @@ public class SettingsActivity extends PreferenceActivity {
                 // simple string representation.
                 preference.setSummary(stringValue);
             }
+
+
+            Context context = preference.getContext();
+
+            //Check if times make sense. Otherwise, move time over
+            if(preference.getKey().equals(context.getString(R.string.time_hours_for_alarm_key)) ||
+                    preference.getKey().equals(context.getString(R.string.time_minutes_for_alarm_key)) ||
+                    preference.getKey().equals(context.getString(R.string.time_seconds_for_alarm_key))) {
+                if(Integer.parseInt((String)value) < 0 || (Integer.parseInt((String)value) > 59 &&
+                        !preference.getKey().equals(context.getString(R.string.time_hours_for_alarm_key)))) {
+                    preference.setSummary(((EditTextPreference)preference).getText());
+                    Toast.makeText(context, "Value is invalid!", Toast.LENGTH_LONG).show();
+
+                    return false;
+                }
+            }
+
             return true;
         }
     };
@@ -241,8 +260,8 @@ public class SettingsActivity extends PreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("lap_length_input"));
-            bindPreferenceSummaryToValue(findPreference("units_list"));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.lap_length_input_key)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.units_list_key)));
         }
     }
 
@@ -261,17 +280,17 @@ public class SettingsActivity extends PreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("distance_for_alarm"));
-            bindPreferenceSummaryToValue(findPreference("time_hours_for_alarm"));
-            bindPreferenceSummaryToValue(findPreference("time_minutes_for_alarm"));
-            bindPreferenceSummaryToValue(findPreference("time_seconds_for_alarm"));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.distance_for_alarm_key)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.time_hours_for_alarm_key)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.time_minutes_for_alarm_key)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.time_seconds_for_alarm_key)));
 
 
             //Set initial disabled/enabled for both time preferences
-            boolean isChecked = ((CheckBoxPreference)findPreference("use_distance")).isChecked();
-            findPreference("time_hours_for_alarm").setEnabled(!isChecked);
-            findPreference("time_minutes_for_alarm").setEnabled(!isChecked);
-            findPreference("time_seconds_for_alarm").setEnabled(!isChecked);
+            boolean isChecked = ((CheckBoxPreference)findPreference(getString(R.string.use_distance_key))).isChecked();
+            findPreference(getString(R.string.time_hours_for_alarm_key)).setEnabled(!isChecked);
+            findPreference(getString(R.string.time_minutes_for_alarm_key)).setEnabled(!isChecked);
+            findPreference(getString(R.string.time_seconds_for_alarm_key)).setEnabled(!isChecked);
 
             //Set action for the distance for the use distance checkbox
             findPreference("use_distance").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -279,9 +298,9 @@ public class SettingsActivity extends PreferenceActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     boolean newVal = (Boolean)newValue;
 
-                    findPreference("time_hours_for_alarm").setEnabled(!newVal);
-                    findPreference("time_minutes_for_alarm").setEnabled(!newVal);
-                    findPreference("time_seconds_for_alarm").setEnabled(!newVal);
+                    findPreference(getString(R.string.time_hours_for_alarm_key)).setEnabled(!newVal);
+                    findPreference(getString(R.string.time_minutes_for_alarm_key)).setEnabled(!newVal);
+                    findPreference(getString(R.string.time_seconds_for_alarm_key)).setEnabled(!newVal);
 
                     return true;
                 }
