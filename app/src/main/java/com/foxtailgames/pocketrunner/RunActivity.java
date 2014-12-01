@@ -6,7 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
+import android.widget.TextView;
+
+import gr.antoniom.chronometer.PreciseChronometer;
 
 
 public class RunActivity extends ActionBarActivity {
@@ -20,8 +22,8 @@ public class RunActivity extends ActionBarActivity {
         setContentView(R.layout.activity_run);
         running = false;
         started = false;
-        runManager = new RunManager(getApplicationContext(), (Chronometer)findViewById(R.id.chrono_label));
-        updateButtonsText();
+        runManager = new RunManager(this, getApplicationContext(), (PreciseChronometer)findViewById(R.id.chrono_label));
+        updateAll();
     }
 
 
@@ -49,12 +51,22 @@ public class RunActivity extends ActionBarActivity {
 
     public void lapClicked(View view) {
         runManager.lapClicked();
-        updateButtonsText();
+        updateAll();
     }
 
     public void stopClicked(View view) {
         runManager.stopClicked();
+        updateAll();
+    }
+
+    private void updateAll() {
         updateButtonsText();
+        updateRemaining();
+        updateAverageSpeed();
+    }
+
+    private void updateAverageSpeed() {
+        ((TextView)findViewById(R.id.average_speed_label)).setText(runManager.getAverageSpeed());
     }
 
     private void updateButtonsText() {
@@ -65,5 +77,9 @@ public class RunActivity extends ActionBarActivity {
             ((Button)findViewById(R.id.stop_button)).setText(getString(R.string.start));
             ((Button)findViewById(R.id.lap_button)).setText(getString(R.string.done));
         }
+    }
+
+    private void updateRemaining() {
+        ((TextView)findViewById(R.id.remaining_label)).setText(runManager.getRemainingText());
     }
 }

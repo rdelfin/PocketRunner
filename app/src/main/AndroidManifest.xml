@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.foxtailgames.pocketrunner" >
+    <!-- ******************** PERMISIONS **************************** -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
+    <!-- ****************** APPLICATION ***************************** -->
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -19,7 +22,8 @@
         <activity
             android:name="com.foxtailgames.pocketrunner.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="com.foxtailgames.pocketrunner.MainActivity" >
+            android:parentActivityName="com.foxtailgames.pocketrunner.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.foxtailgames.pocketrunner.MainActivity" />
@@ -27,7 +31,8 @@
         <activity
             android:name="com.foxtailgames.pocketrunner.RunActivity"
             android:label="@string/title_activity_run"
-            android:parentActivityName="com.foxtailgames.pocketrunner.MainActivity" >
+            android:parentActivityName="com.foxtailgames.pocketrunner.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.foxtailgames.pocketrunner.MainActivity" />

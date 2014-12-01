@@ -13,7 +13,7 @@
         android:key="@string/units_list_key"
         android:title="@string/units_title"
         android:defaultValue="Meters"
-        android:entries="@array/units_list_vals"
+        android:entries="@array/units_list_titles"
         android:entryValues="@array/units_list_vals"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
