@@ -52,6 +52,8 @@ public class RunActivity extends ActionBarActivity {
     public void lapClicked(View view) {
         runManager.lapClicked();
         updateAll();
+        if(runManager.isDone())
+            finish();
     }
 
     public void stopClicked(View view) {

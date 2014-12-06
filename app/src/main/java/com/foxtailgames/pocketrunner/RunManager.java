@@ -10,6 +10,12 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 
+import com.foxtailgames.pocketrunner.databases.Run;
+import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+
+import java.util.Date;
+import java.util.LinkedList;
+
 import gr.antoniom.chronometer.PreciseChronometer;
 
 /**
@@ -27,14 +33,16 @@ public class RunManager {
     Time endTime;
     PreciseChronometer chronometer;
     long timeChronoStopped;
-    boolean running, started;
+    boolean running, started, done;
     int lapCount;
+    LinkedList<Long> lapTimes;
     long timeLastLap;
     Activity activity;
     Context context;
     AlertDialog alarmDialog;
     Vibrator vibrator;
     boolean alarmTriggered;
+    RunReaderDbHelper dbHelper;
 
     public RunManager(Activity activity, Context context, PreciseChronometer chronometer) {
         updatePreferences(context);
@@ -49,6 +57,9 @@ public class RunManager {
         this.alarmDialog = null;
         this.vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         this.alarmTriggered = false;
+        this.lapTimes = new LinkedList<Long>();
+        this.dbHelper = new RunReaderDbHelper(context);
+        this.done = false;
 
         //Handler for the chronometer
         this.chronometer.setOnChronometerTickListener(new PreciseChronometer.OnChronometerTickListener() {
@@ -108,10 +119,35 @@ public class RunManager {
     }
 
     public void lapClicked() {
+        /*
+         * If the person is running, this button functions as a lap. Also, if this is done, new lap
+         * should be counted.
+         */
         lapCount++;
+        lapTimes.addLast(timeLastLap - chronometer.getTimeElapsed());
         timeLastLap = chronometer.getTimeElapsed();
-        if(distanceRun() >= distanceForAlarm && useDistanceForAlarm)
+        if (distanceRun() >= distanceForAlarm && useDistanceForAlarm)
             triggerAlarm();
+
+        //If this is a done button, add the run to the database and quit
+        if(!running || !started) {
+            long[] arr = new long[lapTimes.size()];
+
+            int i = 0;
+            for(long time : lapTimes) {
+                arr[i] = time;
+                i++;
+            }
+
+            //Only save if the chronometer has actually been used
+            if(chronometer.getTimeElapsed() > 0) {
+                Run run = new Run(new Date(), distanceRun(), units, new Time(timeLastLap), arr);
+                dbHelper.addRun(run);
+                dbHelper.close();
+            }
+
+            done = true;
+        }
     }
 
     private double distanceRun() { return lapCount * lapLength; }
@@ -173,4 +209,6 @@ public class RunManager {
             vibrator.vibrate(times, 1);
         }
     }
+
+    public boolean isDone() { return done; }
 }
