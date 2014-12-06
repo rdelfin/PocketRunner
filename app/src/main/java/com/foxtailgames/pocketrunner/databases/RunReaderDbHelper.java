@@ -74,7 +74,7 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
     }
 
     public Run[] getAllRuns() {
-        LinkedList<Run> runs = new LinkedList<Run>();
+        LinkedList<Run> runs = new LinkedList<>();
         SQLiteDatabase db = getReadableDatabase();
         Run[] result;
 
@@ -125,7 +125,7 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
 
     private long[] getLaps(SQLiteDatabase db, UUID id) {
         long[] result;
-        LinkedList<Long> linkedList = new LinkedList<Long>();
+        LinkedList<Long> linkedList = new LinkedList<>();
         String[] projection = {
             RunReaderContract.LapEntry.COLUMN_NAME_LAP_NUMBER,
             RunReaderContract.LapEntry.COLUMN_NAME_RUN_ID,

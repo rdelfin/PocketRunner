@@ -38,6 +38,15 @@
         android:layout_margin="@dimen/portion_done_text_margin" />
 
     <TextView
+        android:id="@+id/lap_count_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_lap_count"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/subtitle_font_size"
+        android:layout_marginTop="@dimen/lap_count_margin_top"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

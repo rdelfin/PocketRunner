@@ -57,7 +57,7 @@ public class RunManager {
         this.alarmDialog = null;
         this.vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         this.alarmTriggered = false;
-        this.lapTimes = new LinkedList<Long>();
+        this.lapTimes = new LinkedList<>();
         this.dbHelper = new RunReaderDbHelper(context);
         this.done = false;
 
@@ -209,6 +209,8 @@ public class RunManager {
             vibrator.vibrate(times, 1);
         }
     }
+
+    public int getLapCount() { return lapCount; }
 
     public boolean isDone() { return done; }
 }

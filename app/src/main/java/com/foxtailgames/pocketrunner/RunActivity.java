@@ -65,6 +65,7 @@ public class RunActivity extends ActionBarActivity {
         updateButtonsText();
         updateRemaining();
         updateAverageSpeed();
+        updateLapCount();
     }
 
     private void updateAverageSpeed() {
@@ -83,5 +84,11 @@ public class RunActivity extends ActionBarActivity {
 
     private void updateRemaining() {
         ((TextView)findViewById(R.id.remaining_label)).setText(runManager.getRemainingText());
+    }
+
+    private void updateLapCount() {
+        int lapCount = runManager.getLapCount();
+        String lapsText = getString(lapCount == 1 ? R.string.lap : R.string.laps).toLowerCase();
+        ((TextView)findViewById(R.id.lap_count_label)).setText(runManager.getLapCount() + " " + lapsText);
     }
 }
