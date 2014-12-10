@@ -26,25 +26,34 @@ import gr.antoniom.chronometer.PreciseChronometer;
  */
 public class RunManager {
 
-    double lapLength;
-    String units;
-    boolean useDistanceForAlarm;
-    double distanceForAlarm;
-    Time endTime;
-    PreciseChronometer chronometer;
-    long timeChronoStopped;
-    boolean running, started, done;
-    int lapCount;
-    LinkedList<Long> lapTimes;
-    long timeLastLap;
-    Activity activity;
-    Context context;
-    AlertDialog alarmDialog;
-    Vibrator vibrator;
-    boolean alarmTriggered;
-    RunReaderDbHelper dbHelper;
+    protected double lapLength;
+    protected String units;
+    protected int lapCount;
+    protected LinkedList<Long> lapTimes;
+    protected long timeLastLap;
 
-    public RunManager(Activity activity, Context context, PreciseChronometer chronometer) {
+    protected boolean useDistanceForAlarm;
+    protected double distanceForAlarm;
+
+    protected Time endTime;
+    protected PreciseChronometer chronometer;
+    protected long timeChronoStopped;
+
+    protected boolean running, started, done;
+
+
+    protected RunActivity activity;
+    protected Context context;
+
+    protected boolean alarmTriggered;
+    protected AlertDialog alarmDialog;
+    protected Vibrator vibrator;
+
+    protected RunReaderDbHelper dbHelper;
+
+    protected PebbleManager pebbleManager;
+
+    public RunManager(RunActivity activity, Context context, PreciseChronometer chronometer) {
         updatePreferences(context);
         this.chronometer = chronometer;
         this.timeChronoStopped = 0;
@@ -60,6 +69,7 @@ public class RunManager {
         this.lapTimes = new LinkedList<>();
         this.dbHelper = new RunReaderDbHelper(context);
         this.done = false;
+        this.pebbleManager = new PebbleManager(context, lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
 
         //Handler for the chronometer
         this.chronometer.setOnChronometerTickListener(new PreciseChronometer.OnChronometerTickListener() {

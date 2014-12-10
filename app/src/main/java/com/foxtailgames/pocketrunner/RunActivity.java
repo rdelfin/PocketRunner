@@ -7,6 +7,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.getpebble.android.kit.PebbleKit;
+
+import java.util.UUID;
 
 import gr.antoniom.chronometer.PreciseChronometer;
 
@@ -61,7 +66,7 @@ public class RunActivity extends ActionBarActivity {
         updateAll();
     }
 
-    private void updateAll() {
+    public void updateAll() {
         updateButtonsText();
         updateRemaining();
         updateAverageSpeed();

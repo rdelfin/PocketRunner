@@ -27,4 +27,7 @@
     <string name="alarm_dialog_message">You finished your run!</string>
     <string name="dialog_button_text">Done</string>
 
+    <string name="watch_not_connected_toast">Pebble not connected! Ignore this if you don\'t have a Pebble</string>
+    <string name="app_messages_not_supported_toast">Your version of Pebble is not supported. Please update</string>
+    <string name="connection_not_completed_toast">Connection with Pebble could not be completed</string>
 </resources>
