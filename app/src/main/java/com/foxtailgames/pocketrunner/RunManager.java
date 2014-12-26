@@ -69,7 +69,7 @@ public class RunManager {
         this.lapTimes = new LinkedList<>();
         this.dbHelper = new RunReaderDbHelper(context);
         this.done = false;
-        this.pebbleManager = new PebbleManager(context, lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
+        this.pebbleManager = new PebbleManager(context, this, lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
 
         //Handler for the chronometer
         this.chronometer.setOnChronometerTickListener(new PreciseChronometer.OnChronometerTickListener() {
@@ -94,6 +94,10 @@ public class RunManager {
         int timeSeconds = Integer.parseInt(sharedPreferences.getString(context.getString(R.string.time_seconds_for_alarm_key), "0"));
 
         this.endTime = new Time(timeHours, timeMinutes, timeSeconds);
+    }
+
+    public void setChronometerTime(long time) {
+        chronometer.setBase(SystemClock.elapsedRealtime() + time);
     }
 
     public void start() {
@@ -129,36 +133,50 @@ public class RunManager {
     }
 
     public void lapClicked() {
+        //Call the pebble manager to inform of appropriate action
+        pebbleManager.sendLap();
+        if(!running || !started)
+            pebbleManager.sendPause((int)chronometer.getTimeElapsed());
+
         /*
          * If the person is running, this button functions as a lap. Also, if this is done, new lap
          * should be counted.
          */
-        lapCount++;
-        lapTimes.addLast(timeLastLap - chronometer.getTimeElapsed());
-        timeLastLap = chronometer.getTimeElapsed();
-        if (distanceRun() >= distanceForAlarm && useDistanceForAlarm)
-            triggerAlarm();
+        increaseLap(chronometer.getTimeElapsed());
 
         //If this is a done button, add the run to the database and quit
         if(!running || !started) {
-            long[] arr = new long[lapTimes.size()];
-
-            int i = 0;
-            for(long time : lapTimes) {
-                arr[i] = time;
-                i++;
-            }
-
-            //Only save if the chronometer has actually been used
-            if(chronometer.getTimeElapsed() > 0) {
-                Run run = new Run(new Date(), distanceRun(), units, new Time(timeLastLap), arr);
-                dbHelper.addRun(run);
-                dbHelper.close();
-            }
-
-            done = true;
+            doneRoutine();
         }
     }
+
+    public void increaseLap(long time) {
+        lapCount++;
+        lapTimes.addLast(timeLastLap - time);
+        timeLastLap = time;
+        if (distanceRun() >= distanceForAlarm && useDistanceForAlarm)
+            triggerAlarm();
+    }
+
+    public void doneRoutine() {
+        long[] arr = new long[lapTimes.size()];
+
+        int i = 0;
+        for(long time : lapTimes) {
+            arr[i] = time;
+            i++;
+        }
+
+        //Only save if the chronometer has actually been used
+        if(chronometer.getTimeElapsed() > 0) {
+            Run run = new Run(new Date(), distanceRun(), units, new Time(timeLastLap), arr);
+            dbHelper.addRun(run);
+            dbHelper.close();
+        }
+
+        done = true;
+    }
+
 
     private double distanceRun() { return lapCount * lapLength; }
 
@@ -223,4 +241,5 @@ public class RunManager {
     public int getLapCount() { return lapCount; }
 
     public boolean isDone() { return done; }
+    public boolean isPaused() { return !running || !started;  }
 }
