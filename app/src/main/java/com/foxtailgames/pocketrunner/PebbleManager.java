@@ -1,13 +1,13 @@
 package com.foxtailgames.pocketrunner;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
-import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
-import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -63,26 +63,28 @@ public class PebbleManager {
         if(PebbleKit.isWatchConnected(context) && PebbleKit.areAppMessagesSupported(context)) {
             sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime.getTotalMilliseconds());
         }
+
+        //Check if AppMessages are supported on android
+        if (PebbleKit.areAppMessagesSupported(context)) {
+            Log.i("PebbleManager", "App Message is supported!");
+        } else {
+            Log.i("PebbleManager", "App Message is not supported");
+        }
     }
 
     public void setupReceiveHandlers() {
-        /*PebbleKit.registerPebbleConnectedReceiver(context, new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.i("PEBBLE_MANAGER", "Pebble connected!");
-
-                //Open Pebble app
-                PebbleKit.startAppOnPebble(context, PEBBLE_APP_UUID);
-
-                sendData();
-            }
-        });
-        PebbleKit.registerPebbleDisconnectedReceiver(context, new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.i("PEBBLE_MANAGER", "Pebble disconected!");
-            }
-        });*/
+       PebbleKit.registerPebbleConnectedReceiver(context, new BroadcastReceiver() {
+           @Override
+           public void onReceive(Context context, Intent intent) {
+               Log.i("PEBBLE_MANAGER", "Pebble connected!");
+           }
+       });
+       PebbleKit.registerPebbleDisconnectedReceiver(context, new BroadcastReceiver() {
+           @Override
+           public void onReceive(Context context, Intent intent) {
+               Log.i("PEBBLE_MANAGER", "Pebble disconected!");
+           }
+       });
 
         PebbleKit.registerReceivedAckHandler(context, new PebbleKit.PebbleAckReceiver(PEBBLE_APP_UUID) {
             @Override
@@ -95,7 +97,7 @@ public class PebbleManager {
                 //Only for the initial transaction id
                 if(transactionId == INITIAL_DATA_TRANSACTION_ID) {
                     resendCount = 0;
-                    Log.i("PEBBLE_INIT", "Received acknowledge properly");
+                    Log.i("PebbleManager", "INIT: Received acknowledge properly");
                 }
             }
         });
@@ -106,7 +108,7 @@ public class PebbleManager {
                 //Only check for the Initial data transaction
                 if (transactionId == INITIAL_DATA_TRANSACTION_ID) {
                     resendCount++;
-                    Log.i("PEBBLE_INIT", "Received not acknowledge. ERROR." + ((resendCount <= MAX_RESENDS) ? " Resending..." : ""));
+                    Log.i("PebbleManager", "INIT: Received not acknowledge. ERROR." + ((resendCount <= MAX_RESENDS) ? " Resending..." : ""));
 
                     //Only resend if its been sent less than MAX_RESENDS times
                     if(resendCount <= MAX_RESENDS) {
