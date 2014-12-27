@@ -1,6 +1,5 @@
 package com.foxtailgames.pocketrunner;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,8 +50,6 @@ public class RunManager {
 
     protected RunReaderDbHelper dbHelper;
 
-    protected PebbleManager pebbleManager;
-
     public RunManager(RunActivity activity, Context context, PreciseChronometer chronometer) {
         updatePreferences(context);
         this.chronometer = chronometer;
@@ -69,7 +66,6 @@ public class RunManager {
         this.lapTimes = new LinkedList<>();
         this.dbHelper = new RunReaderDbHelper(context);
         this.done = false;
-        this.pebbleManager = new PebbleManager(context, this, lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
 
         //Handler for the chronometer
         this.chronometer.setOnChronometerTickListener(new PreciseChronometer.OnChronometerTickListener() {
@@ -133,10 +129,6 @@ public class RunManager {
     }
 
     public void lapClicked() {
-        //Call the pebble manager to inform of appropriate action
-        pebbleManager.sendLap();
-        if(!running || !started)
-            pebbleManager.sendPause((int)chronometer.getTimeElapsed());
 
         /*
          * If the person is running, this button functions as a lap. Also, if this is done, new lap
