@@ -10,7 +10,6 @@
     <string name="statistics">Statistics</string>
     <string name="title_activity_run">RunActivity</string>
     <string name="per">per</string>
-
     <string name="stop">Stop!</string>
     <string name="average_speed">Average Speed</string>
     <string name="lap">Lap</string>
@@ -18,16 +17,18 @@
     <string name="resume">Resume</string>
     <string name="done">Done</string>
     <string name="laps">Laps</string>
-
     <string name="zero_time">00:00:00</string>
     <string name="default_average_speed">00:00:00 per Km</string>
     <string name="default_portion_done">00.00 Km / 00.00 Km</string>
     <string name="default_lap_count">0 laps</string>
-
     <string name="alarm_dialog_message">You finished your run!</string>
     <string name="dialog_button_text">Done</string>
-
     <string name="watch_not_connected_toast">Pebble not connected! Ignore this if you don\'t have a Pebble</string>
     <string name="app_messages_not_supported_toast">Your version of Pebble is not supported. Please update</string>
     <string name="connection_not_completed_toast">Connection with Pebble could not be completed</string>
+    <string name="title_activity_statistics">StatisticsActivity</string>
+    <string name="total_distance_ran">Distance Ran:</string>
+    <string name="default_distance_ran">0 km</string>
+    <string name="run_list_title_text">Runs:</string>
+
 </resources>
