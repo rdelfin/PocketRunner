@@ -11,8 +11,10 @@ import com.foxtailgames.pocketrunner.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,12 +34,14 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(RunReaderContract.SQL_CREATE_TABLES);
+        db.execSQL(RunReaderContract.SQL_CREATE_TABLE_RUN);
+        db.execSQL(RunReaderContract.SQL_CREATE_TABLE_LAP);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(RunReaderContract.SQL_DELETE_TABLES);
+        db.execSQL(RunReaderContract.SQL_DELETE_TABLE_LAP);
+        db.execSQL(RunReaderContract.SQL_DELETE_TABLE_RUN);
         onCreate(db);
     }
 
@@ -67,16 +71,16 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
             lapValues.put(RunReaderContract.LapEntry.COLUMN_NAME_LAP_NUMBER, i);
             lapValues.put(RunReaderContract.LapEntry.COLUMN_NAME_RUN_ID, runId);
             lapValues.put(RunReaderContract.LapEntry.COLUMN_NAME_TIME, lapTime);
+            db.insert(RunReaderContract.LapEntry.TABLE_NAME, null, lapValues);
             i++;
         }
 
         db.close();
     }
 
-    public Run[] getAllRuns() {
-        LinkedList<Run> runs = new LinkedList<>();
+    public List<Run> getAllRuns() {
+        ArrayList<Run> runs = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        Run[] result;
 
         String[] projection = {
                 RunReaderContract.RunEntry._ID,
@@ -106,21 +110,14 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
 
             Run run = new Run(id, date, distance, units, new Time(time), laps);
 
-            runs.addLast(run);
+            runs.add(run);
 
             hasVal = c.moveToNext();
         }
 
         db.close();
 
-        result = new Run[runs.size()];
-        int i = 0;
-        for(Run run : runs) {
-            result[i] = run;
-            i++;
-        }
-
-        return result;
+        return runs;
     }
 
     private long[] getLaps(SQLiteDatabase db, UUID id) {

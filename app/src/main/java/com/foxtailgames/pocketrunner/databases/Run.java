@@ -35,4 +35,9 @@ public class Run {
         this(UUID.randomUUID(), date, distance, units, time, lapTimes);
     }
 
+    public Date getDate() { return date; }
+    public double getDistance() { return distance; }
+    public String getUnits() { return units; }
+    public Time getTime() { return time; }
+    public long[] getLapTimes() { return lapTimes; }
 }

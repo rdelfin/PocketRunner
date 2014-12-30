@@ -41,6 +41,9 @@
     <ListView
         android:id="@+id/runs_list_view"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_height="fill_parent"
+        android:divider="@color/divider_line_color"
+        android:dividerHeight="@dimen/thin_border_width"
+        android:background="@drawable/thin_border_background"/>
 
 </LinearLayout>

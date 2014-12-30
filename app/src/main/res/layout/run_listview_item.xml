@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/list_item_horizontal_padding"
+    android:paddingRight="@dimen/list_item_horizontal_padding">
+
+    <TextView android:id="@+id/run_text_distance"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/subtitle_font_size"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
+
+    <TextView android:id="@+id/run_text_duration"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small_font_size"
+        android:layout_marginBottom="5dp" />
+    <TextView android:id="@+id/run_text_laps"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small_font_size"
+        android:layout_marginBottom="5dp" />
+    <TextView android:id="@+id/run_text_avgspeed"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small_font_size"
+        android:layout_marginBottom="5dp" />
+    <TextView android:id="@+id/run_text_date"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small_font_size"
+        android:layout_marginBottom="5dp" />
+
+
+</LinearLayout>

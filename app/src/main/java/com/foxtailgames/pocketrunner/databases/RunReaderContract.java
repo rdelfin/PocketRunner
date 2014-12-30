@@ -30,14 +30,16 @@ public class RunReaderContract {
     private static final String REAL_TYPE = " REAL";
     private static final String COMMA_SEP = ", ";
 
-    public static final String SQL_CREATE_TABLES =
+    public static final String SQL_CREATE_TABLE_RUN =
         "CREATE TABLE " + RunEntry.TABLE_NAME + " (" +
             RunEntry._ID + " TEXT PRIMARY KEY" + COMMA_SEP +
             RunEntry.COLUMN_NAME_DATE + INTEGER_TYPE + COMMA_SEP +
             RunEntry.COLUMN_NAME_DISTANCE + REAL_TYPE + COMMA_SEP +
             RunEntry.COLUMN_NAME_UNITS + TEXT_TYPE + COMMA_SEP +
             RunEntry.COLUMN_NAME_TIME + TEXT_TYPE + COMMA_SEP +
-            RunEntry.COLUMN_NAME_LAPS + INTEGER_TYPE + "); " +
+            RunEntry.COLUMN_NAME_LAPS + INTEGER_TYPE + "); ";
+
+    public static final String SQL_CREATE_TABLE_LAP =
         "CREATE TABLE " + LapEntry.TABLE_NAME + "(" +
             LapEntry.COLUMN_NAME_LAP_NUMBER + INTEGER_TYPE + COMMA_SEP +
             LapEntry.COLUMN_NAME_RUN_ID + INTEGER_TYPE + COMMA_SEP +
@@ -45,8 +47,9 @@ public class RunReaderContract {
             "FOREIGN KEY(" + LapEntry.COLUMN_NAME_RUN_ID + ") REFERENCES " + RunEntry.TABLE_NAME + "(" + RunEntry._ID + ")" + COMMA_SEP +
             "PRIMARY KEY(" + LapEntry.COLUMN_NAME_LAP_NUMBER + COMMA_SEP + LapEntry.COLUMN_NAME_LAP_NUMBER + ") );";
 
-    public static final String SQL_DELETE_TABLES =
-        "DROP TABLE IF EXISTS " + RunEntry.TABLE_NAME + ";" +
+    public static final String SQL_DELETE_TABLE_RUN =
+        "DROP TABLE IF EXISTS " + RunEntry.TABLE_NAME + ";";
+    public static final String SQL_DELETE_TABLE_LAP =
         "DROP TABLE IF EXISTS " + LapEntry.TABLE_NAME + ";";
 
 

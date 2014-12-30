@@ -2,8 +2,17 @@ package com.foxtailgames.pocketrunner;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
+
+import com.foxtailgames.pocketrunner.databases.Run;
+import com.foxtailgames.pocketrunner.databases.RunArrayAdapter;
+import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+
+import java.util.List;
 
 
 public class StatisticsActivity extends ActionBarActivity {
@@ -12,6 +21,8 @@ public class StatisticsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+
+        loadRunList();
     }
 
 
@@ -35,5 +46,29 @@ public class StatisticsActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadRunList()
+    {
+        ListView runsView = (ListView)findViewById(R.id.runs_list_view);
+        RunReaderDbHelper dbHelper = new RunReaderDbHelper(getApplicationContext());
+
+        List<Run> runList = dbHelper.getAllRuns();
+
+        if(runList.size() == 0)
+        {
+            Log.d("StatisticsActivity", "RunList is empty!");
+            runsView.setVisibility(View.GONE);
+        }
+        else
+        {
+            Log.d("StatisticsActivity", "RunList has " + runList.size() + " items!");
+            runsView.setVisibility(View.VISIBLE);
+
+            //Use array adapter
+            RunArrayAdapter runAdapter = new RunArrayAdapter(this,R.layout.run_listview_item, runList);
+            //bookDataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            runsView.setAdapter(runAdapter);
+        }
     }
 }
