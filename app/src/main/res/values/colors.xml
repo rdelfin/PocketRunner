@@ -7,5 +7,5 @@
     <color name="stop_button_color">#F00</color>
     <color name="average_speed_background">#FDD</color>
     <color name="lap_button_background">#090</color>
-    <color name="divider_line_color">#555</color>
+    <color name="divider_line_color">#999</color>
 </resources>
