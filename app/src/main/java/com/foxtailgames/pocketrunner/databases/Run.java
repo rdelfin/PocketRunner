@@ -1,6 +1,6 @@
 package com.foxtailgames.pocketrunner.databases;
 
-import com.foxtailgames.pocketrunner.Time;
+import com.foxtailgames.pocketrunner.utilities.Time;
 
 import java.util.Date;
 import java.util.UUID;

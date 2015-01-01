@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.foxtailgames.pocketrunner.Time;
+import com.foxtailgames.pocketrunner.utilities.Time;
 
 import java.text.DateFormat;
 import java.text.ParseException;

@@ -7,14 +7,14 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.foxtailgames.pocketrunner.Time;
+import com.foxtailgames.pocketrunner.utilities.Time;
 
 import java.text.DecimalFormat;
 
 /**
  * The Android chronometer widget revised so as to count milliseconds
  * Class revised by Ricardo Delfin Garcia for integrating Time class.
- * @see com.foxtailgames.pocketrunner.Time
+ * @see com.foxtailgames.pocketrunner.utilities.Time
  *
  * @author antoniom
  * @version 1.1

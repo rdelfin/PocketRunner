@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.foxtailgames.pocketrunner.R;
-import com.foxtailgames.pocketrunner.Time;
+import com.foxtailgames.pocketrunner.utilities.Time;
 
 import java.util.List;
 
@@ -55,12 +55,13 @@ public class RunArrayAdapter extends ArrayAdapter<Run> {
 
         int laps = run.getLapTimes().length;
 
-        holder.distance.setText(run.getDistance() + " " + run.getUnits());
+        Time averageSpeed = new Time((long)(run.getTime().getTotalMilliseconds() / run.getDistance()));
+
+        holder.distance.setText(String.format("%.2f %s", run.getDistance(), run.getUnits()));
         holder.time.setText(run.getTime().toString());
         holder.laps.setText(laps + " " + context.getString(R.string.laps).toLowerCase());
-        holder.avgSpeed.setText(new Time((long)(run.getTime().getTotalMilliseconds() / run.getDistance())).toString());
+        holder.avgSpeed.setText(averageSpeed.toString() + " " + context.getString(R.string.per) + " " + run.getUnits());
         holder.date.setText(run.getDate().toString());
-
 
         return row;
     }

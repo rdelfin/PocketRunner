@@ -1,4 +1,4 @@
-package com.foxtailgames.pocketrunner;
+package com.foxtailgames.pocketrunner.managers;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,8 +9,11 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 
+import com.foxtailgames.pocketrunner.R;
+import com.foxtailgames.pocketrunner.RunActivity;
 import com.foxtailgames.pocketrunner.databases.Run;
 import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+import com.foxtailgames.pocketrunner.utilities.Time;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -186,7 +189,7 @@ public class RunManager {
         return result;
     }
 
-    boolean showStop() { return running; }
+    public boolean showStop() { return running; }
 
     public String getAverageSpeed() {
         Time time;

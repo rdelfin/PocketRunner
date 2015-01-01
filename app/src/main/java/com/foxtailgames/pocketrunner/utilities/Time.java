@@ -1,4 +1,4 @@
-package com.foxtailgames.pocketrunner;
+package com.foxtailgames.pocketrunner.utilities;
 
 import java.text.DecimalFormat;
 

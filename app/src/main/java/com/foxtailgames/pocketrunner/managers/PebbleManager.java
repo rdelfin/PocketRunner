@@ -1,10 +1,11 @@
-package com.foxtailgames.pocketrunner;
+package com.foxtailgames.pocketrunner.managers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.foxtailgames.pocketrunner.utilities.Time;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 

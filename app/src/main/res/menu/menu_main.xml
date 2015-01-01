@@ -5,7 +5,8 @@
         android:orderInCategory="100" app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_settings" />
     <item android:id="@+id/action_start_run" android:title="@string/start_run"
-        android:orderInCategory="110" app:showAsAction="never" />
+        android:orderInCategory="110" app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_run"/>
     <item android:id="@+id/action_statistics" android:title="@string/statistics"
         android:orderInCategory="120" app:showAsAction="never" />
 </menu>

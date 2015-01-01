@@ -1,5 +1,6 @@
 package com.foxtailgames.pocketrunner;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,11 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.getpebble.android.kit.PebbleKit;
-
-import java.util.UUID;
+import com.foxtailgames.pocketrunner.managers.RunManager;
 
 import gr.antoniom.chronometer.PreciseChronometer;
 
