@@ -49,6 +49,7 @@ public class RunManager {
 
     protected boolean alarmTriggered;
     protected AlertDialog alarmDialog;
+    protected AlertDialog noRunDialog;
     protected Vibrator vibrator;
 
     protected RunReaderDbHelper dbHelper;
@@ -132,16 +133,20 @@ public class RunManager {
     }
 
     public void lapClicked() {
+        // If the chronometer has not actually been used, then show a message
+        if(chronometer.getTimeElapsed() == 0) {
+            showNoRunMessage();
+        } else {
+            /*
+             * If the person is running, this button functions as a lap. Also, if this is done, new lap
+             * should be counted.
+             */
+            increaseLap(chronometer.getTimeElapsed());
 
-        /*
-         * If the person is running, this button functions as a lap. Also, if this is done, new lap
-         * should be counted.
-         */
-        increaseLap(chronometer.getTimeElapsed());
-
-        //If this is a done button, add the run to the database and quit
-        if(!running || !started) {
-            doneRoutine();
+            //If this is a done button, add the run to the database and quit
+            if (!running || !started) {
+                doneRoutine();
+            }
         }
     }
 
@@ -200,12 +205,30 @@ public class RunManager {
         return time.toString() + " " + context.getString(R.string.per) + " " + units;
     }
 
+    public void showNoRunMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.invalid)
+                .setMessage(R.string.no_run_message)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Do nothing. Nothing has to be done...
+                    }
+                });
+
+        noRunDialog = builder.create();
+        noRunDialog.show();
+
+    }
+
     public void triggerAlarm() {
         if(!alarmTriggered) {
             alarmTriggered = true;
             //Start the notification
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage(R.string.alarm_dialog_message)
+            builder.setTitle(R.string.alarm_dialog_title)
+                    .setMessage(R.string.alarm_dialog_message)
                     .setPositiveButton(R.string.dialog_button_text, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             vibrator.cancel();

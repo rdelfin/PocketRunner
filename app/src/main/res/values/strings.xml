@@ -32,5 +32,8 @@
     <string name="run_list_title_text">Runs:</string>
     <string name="go_to_settings">Go to settings!</string>
     <string name="go_for_a_run">Go out for a run!</string>
+    <string name="alarm_dialog_title">Done!</string>
+    <string name="invalid">Invalid!</string>
+    <string name="no_run_message">You have not run! Either go back or run</string>
 
 </resources>

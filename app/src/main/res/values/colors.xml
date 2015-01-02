@@ -8,4 +8,6 @@
     <color name="average_speed_background">#FDD</color>
     <color name="lap_button_background">#090</color>
     <color name="divider_line_color">#999</color>
+    <color name="lap_button_color">#99CC00</color>
+    <color name="start_button_color">#FF4444</color>
 </resources>
