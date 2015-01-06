@@ -44,6 +44,7 @@ public class PebbleManager {
     private final static int RUN_CLOSE = 12;
 
     private final static int INITIAL_DATA_TRANSACTION_ID = 42;
+    private final static int DEFINE_RUN_UUID_TRANSACTION_ID = 43;
 
     private final static int MAX_RESENDS = 10;
     private final static int WAIT_TIME = 100;
@@ -167,16 +168,18 @@ public class PebbleManager {
         PebbleKit.registerReceivedDataHandler(context, new PebbleKit.PebbleDataReceiver(PEBBLE_APP_UUID) {
             @Override
             public void receiveData(Context context, int transactionId, PebbleDictionary pebbleTuples) {
-                Log.d("PebbleManager", "Recieved data from pebble");
+                Log.i("PebbleManager", "Recieved data from pebble");
 
                 if (pebbleTuples.contains(REQUEST_INITIAL)) {
                     //Initial data send. Only if pebble requests it
                     sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
                 } else if (pebbleTuples.contains(RUN_OPEN)) {
-
+                    Log.i("PebbleManager", "Sending UUID...");
                     //Create run and set some values
                     sentRun = new Run();
                     sentRun.units = units;
+
+                    lapTimesBuffer = new ArrayList<Time>();
 
                     //Send the UUID of the run
                     PebbleDictionary tuples = new PebbleDictionary();
@@ -184,6 +187,7 @@ public class PebbleManager {
                     bb.putLong(sentRun.id.getMostSignificantBits());
                     bb.putLong(sentRun.id.getLeastSignificantBits());
                     tuples.addBytes(RUN_UUID_DEFINE, bb.array());
+                    PebbleKit.sendDataToPebbleWithTransactionId(context, PEBBLE_APP_UUID, tuples, DEFINE_RUN_UUID_TRANSACTION_ID);
 
                 } else if (pebbleTuples.contains(RUN_TIME)) {
                     //Initial data
@@ -215,10 +219,9 @@ public class PebbleManager {
                     if(uuid.equals(sentRun.id)) {
                         sentRun.distance = lapCountRecieved * lapLength;
 
-                        Object[] tempLapTimes = lapTimesBuffer.toArray();
-                        sentRun.lapTimes = new long[tempLapTimes.length];
+                        sentRun.lapTimes = new long[lapTimesBuffer.size()];
                         for(int i = 0; i < sentRun.lapTimes.length; i++) {
-                            sentRun.lapTimes[i] = (long)tempLapTimes[i];
+                            sentRun.lapTimes[i] = lapTimesBuffer.get(i).getTotalMilliseconds();
                         }
 
                         RunReaderDbHelper dbHelper = new RunReaderDbHelper(context);
@@ -227,6 +230,8 @@ public class PebbleManager {
                         sentRun = null;
                     }
                 }
+
+                PebbleKit.sendAckToPebble(context, transactionId);
             }
         });
     }
