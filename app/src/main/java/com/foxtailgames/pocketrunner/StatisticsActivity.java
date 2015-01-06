@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import com.foxtailgames.pocketrunner.databases.Run;
 import com.foxtailgames.pocketrunner.databases.RunArrayAdapter;
-import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+import com.foxtailgames.pocketrunner.databases.RunDbHelper;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class StatisticsActivity extends ActionBarActivity {
     private void loadRunList()
     {
         ListView runsView = (ListView)findViewById(R.id.runs_list_view);
-        RunReaderDbHelper dbHelper = new RunReaderDbHelper(getApplicationContext());
+        RunDbHelper dbHelper = new RunDbHelper(getApplicationContext());
 
         List<Run> runList = dbHelper.getAllRuns();
 

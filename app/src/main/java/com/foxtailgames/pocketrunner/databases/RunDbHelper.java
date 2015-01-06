@@ -20,28 +20,28 @@ import java.util.UUID;
 /**
  * Created by Ricardo on 02/12/2014.
  */
-public class RunReaderDbHelper extends SQLiteOpenHelper {
+public class RunDbHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "RunReader.db";
 
     DateFormat df;
 
-    public RunReaderDbHelper(Context context) {
+    public RunDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(RunReaderContract.SQL_CREATE_TABLE_RUN);
-        db.execSQL(RunReaderContract.SQL_CREATE_TABLE_LAP);
+        db.execSQL(RunContract.SQL_CREATE_TABLE_RUN);
+        db.execSQL(RunContract.SQL_CREATE_TABLE_LAP);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(RunReaderContract.SQL_DELETE_TABLE_LAP);
-        db.execSQL(RunReaderContract.SQL_DELETE_TABLE_RUN);
+        db.execSQL(RunContract.SQL_DELETE_TABLE_LAP);
+        db.execSQL(RunContract.SQL_DELETE_TABLE_RUN);
         onCreate(db);
     }
 
@@ -55,23 +55,23 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
         String runId = run.id.toString();
 
         ContentValues runValues = new ContentValues();
-        runValues.put(RunReaderContract.RunEntry._ID, run.id.toString());
-        runValues.put(RunReaderContract.RunEntry.COLUMN_NAME_DATE, df.format(run.date));
-        runValues.put(RunReaderContract.RunEntry.COLUMN_NAME_DISTANCE, run.distance);
-        runValues.put(RunReaderContract.RunEntry.COLUMN_NAME_UNITS, run.units);
-        runValues.put(RunReaderContract.RunEntry.COLUMN_NAME_TIME, run.time.getTotalMilliseconds());
-        runValues.put(RunReaderContract.RunEntry.COLUMN_NAME_LAPS, run.lapTimes.length);
+        runValues.put(RunContract.RunEntry._ID, run.id.toString());
+        runValues.put(RunContract.RunEntry.COLUMN_NAME_DATE, df.format(run.date));
+        runValues.put(RunContract.RunEntry.COLUMN_NAME_DISTANCE, run.distance);
+        runValues.put(RunContract.RunEntry.COLUMN_NAME_UNITS, run.units);
+        runValues.put(RunContract.RunEntry.COLUMN_NAME_TIME, run.time.getTotalMilliseconds());
+        runValues.put(RunContract.RunEntry.COLUMN_NAME_LAPS, run.lapTimes.length);
 
-        db.insert(RunReaderContract.RunEntry.TABLE_NAME, null, runValues);
+        db.insert(RunContract.RunEntry.TABLE_NAME, null, runValues);
 
         int i = 0;
         //  So that the data structure can be changed to any collection
         for(long lapTime : run.lapTimes) {
             ContentValues lapValues = new ContentValues();
-            lapValues.put(RunReaderContract.LapEntry.COLUMN_NAME_LAP_NUMBER, i);
-            lapValues.put(RunReaderContract.LapEntry.COLUMN_NAME_RUN_ID, runId);
-            lapValues.put(RunReaderContract.LapEntry.COLUMN_NAME_TIME, lapTime);
-            db.insert(RunReaderContract.LapEntry.TABLE_NAME, null, lapValues);
+            lapValues.put(RunContract.LapEntry.COLUMN_NAME_LAP_NUMBER, i);
+            lapValues.put(RunContract.LapEntry.COLUMN_NAME_RUN_ID, runId);
+            lapValues.put(RunContract.LapEntry.COLUMN_NAME_TIME, lapTime);
+            db.insert(RunContract.LapEntry.TABLE_NAME, null, lapValues);
             i++;
         }
 
@@ -83,28 +83,28 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] projection = {
-                RunReaderContract.RunEntry._ID,
-                RunReaderContract.RunEntry.COLUMN_NAME_DATE,
-                RunReaderContract.RunEntry.COLUMN_NAME_DISTANCE,
-                RunReaderContract.RunEntry.COLUMN_NAME_UNITS,
-                RunReaderContract.RunEntry.COLUMN_NAME_TIME
+                RunContract.RunEntry._ID,
+                RunContract.RunEntry.COLUMN_NAME_DATE,
+                RunContract.RunEntry.COLUMN_NAME_DISTANCE,
+                RunContract.RunEntry.COLUMN_NAME_UNITS,
+                RunContract.RunEntry.COLUMN_NAME_TIME
         };
-        String sortOrder = RunReaderContract.RunEntry.COLUMN_NAME_DATE + " DESC";
+        String sortOrder = RunContract.RunEntry.COLUMN_NAME_DATE + " DESC";
 
-        Cursor c = db.query(RunReaderContract.RunEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
+        Cursor c = db.query(RunContract.RunEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
         boolean hasVal = c.moveToFirst();
 
         while(hasVal) {
-            UUID id = UUID.fromString(c.getString(c.getColumnIndex(RunReaderContract.RunEntry._ID)));
+            UUID id = UUID.fromString(c.getString(c.getColumnIndex(RunContract.RunEntry._ID)));
             Date date;
             try {
-                date = df.parse(c.getString(c.getColumnIndex(RunReaderContract.RunEntry.COLUMN_NAME_DATE)));
+                date = df.parse(c.getString(c.getColumnIndex(RunContract.RunEntry.COLUMN_NAME_DATE)));
             } catch(ParseException e) {
                 date = new Date();
             }
-            double distance = c.getDouble(c.getColumnIndex(RunReaderContract.RunEntry.COLUMN_NAME_DISTANCE));
-            String units = c.getString(c.getColumnIndex(RunReaderContract.RunEntry.COLUMN_NAME_UNITS));
-            long time = c.getLong(c.getColumnIndex(RunReaderContract.RunEntry.COLUMN_NAME_TIME));
+            double distance = c.getDouble(c.getColumnIndex(RunContract.RunEntry.COLUMN_NAME_DISTANCE));
+            String units = c.getString(c.getColumnIndex(RunContract.RunEntry.COLUMN_NAME_UNITS));
+            long time = c.getLong(c.getColumnIndex(RunContract.RunEntry.COLUMN_NAME_TIME));
 
             long[] laps = getLaps(db, id);
 
@@ -124,21 +124,21 @@ public class RunReaderDbHelper extends SQLiteOpenHelper {
         long[] result;
         LinkedList<Long> linkedList = new LinkedList<>();
         String[] projection = {
-            RunReaderContract.LapEntry.COLUMN_NAME_LAP_NUMBER,
-            RunReaderContract.LapEntry.COLUMN_NAME_RUN_ID,
-            RunReaderContract.LapEntry.COLUMN_NAME_TIME
+            RunContract.LapEntry.COLUMN_NAME_LAP_NUMBER,
+            RunContract.LapEntry.COLUMN_NAME_RUN_ID,
+            RunContract.LapEntry.COLUMN_NAME_TIME
         };
-        String sortOrder = RunReaderContract.LapEntry.COLUMN_NAME_LAP_NUMBER + " ASC";
-        String selection = RunReaderContract.LapEntry.COLUMN_NAME_RUN_ID + " LIKE ?";
+        String sortOrder = RunContract.LapEntry.COLUMN_NAME_LAP_NUMBER + " ASC";
+        String selection = RunContract.LapEntry.COLUMN_NAME_RUN_ID + " LIKE ?";
         String[] selectionArgs = { id.toString() };
 
         //Query the database for the run
-        Cursor c = db.query(RunReaderContract.LapEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor c = db.query(RunContract.LapEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 
         //Put the lap lengths into a long array
         boolean hasVal = c.moveToFirst();
         while(hasVal) {
-            linkedList.addLast(Long.parseLong(c.getString(c.getColumnIndex(RunReaderContract.LapEntry.COLUMN_NAME_TIME))));
+            linkedList.addLast(Long.parseLong(c.getString(c.getColumnIndex(RunContract.LapEntry.COLUMN_NAME_TIME))));
             hasVal = c.moveToNext();
         }
 

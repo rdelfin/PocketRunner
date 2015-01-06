@@ -5,9 +5,9 @@ import android.provider.BaseColumns;
 /**
  * Created by Ricardo on 02/12/2014.
  */
-public class RunReaderContract {
+public class RunContract {
 
-    public RunReaderContract() {}
+    public RunContract() {}
 
     public static abstract class RunEntry implements BaseColumns {
         public static final String TABLE_NAME = "runs";

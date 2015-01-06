@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.foxtailgames.pocketrunner.databases.Run;
-import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+import com.foxtailgames.pocketrunner.databases.RunDbHelper;
 import com.foxtailgames.pocketrunner.managers.PebbleManager;
 import com.foxtailgames.pocketrunner.utilities.ConversionValues;
 import com.foxtailgames.pocketrunner.utilities.UnitDoesNotExistException;
@@ -86,7 +86,7 @@ public class MainActivity extends ActionBarActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         //Open database, get list of runs and close database
-        RunReaderDbHelper dbHelper = new RunReaderDbHelper(getApplicationContext());
+        RunDbHelper dbHelper = new RunDbHelper(getApplicationContext());
         List<Run> runs = dbHelper.getAllRuns();
         dbHelper.close();
 

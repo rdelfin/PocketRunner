@@ -12,7 +12,7 @@ import android.preference.PreferenceManager;
 import com.foxtailgames.pocketrunner.R;
 import com.foxtailgames.pocketrunner.RunActivity;
 import com.foxtailgames.pocketrunner.databases.Run;
-import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+import com.foxtailgames.pocketrunner.databases.RunDbHelper;
 import com.foxtailgames.pocketrunner.utilities.Time;
 
 import java.util.Date;
@@ -52,7 +52,7 @@ public class RunManager {
     protected AlertDialog noRunDialog;
     protected Vibrator vibrator;
 
-    protected RunReaderDbHelper dbHelper;
+    protected RunDbHelper dbHelper;
 
     public RunManager(RunActivity activity, Context context, PreciseChronometer chronometer) {
         updatePreferences(context);
@@ -68,7 +68,7 @@ public class RunManager {
         this.vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         this.alarmTriggered = false;
         this.lapTimes = new LinkedList<>();
-        this.dbHelper = new RunReaderDbHelper(context);
+        this.dbHelper = new RunDbHelper(context);
         this.done = false;
 
         //Handler for the chronometer

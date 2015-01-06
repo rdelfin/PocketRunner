@@ -9,8 +9,9 @@ import android.util.Log;
 
 import com.foxtailgames.pocketrunner.R;
 import com.foxtailgames.pocketrunner.databases.Run;
-import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+import com.foxtailgames.pocketrunner.databases.RunDbHelper;
 import com.foxtailgames.pocketrunner.utilities.Time;
+import com.foxtailgames.pocketrunner.utilities.Util;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
@@ -183,17 +184,12 @@ public class PebbleManager {
 
                     //Send the UUID of the run
                     PebbleDictionary tuples = new PebbleDictionary();
-                    ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-                    bb.putLong(sentRun.id.getMostSignificantBits());
-                    bb.putLong(sentRun.id.getLeastSignificantBits());
-                    tuples.addBytes(RUN_UUID_DEFINE, bb.array());
+                    tuples.addBytes(RUN_UUID_DEFINE, Util.byteArrayFromUUID(sentRun.id));
                     PebbleKit.sendDataToPebbleWithTransactionId(context, PEBBLE_APP_UUID, tuples, DEFINE_RUN_UUID_TRANSACTION_ID);
 
                 } else if (pebbleTuples.contains(RUN_TIME)) {
                     //Initial data
-                    byte[] uuidBytes = pebbleTuples.getBytes(RUN_UUID_ACK);
-                    ByteBuffer bb = ByteBuffer.wrap(uuidBytes);
-                    UUID uuid = new UUID(bb.getLong(), bb.getLong());
+                    UUID uuid = Util.UUIDFromByteArray(pebbleTuples.getBytes(RUN_UUID_ACK));
 
                     if(uuid.equals(sentRun.id)) {
                         sentRun.time = new Time(pebbleTuples.getInteger(RUN_TIME));
@@ -212,9 +208,7 @@ public class PebbleManager {
 
                 } else if (pebbleTuples.contains(RUN_CLOSE)) {
                     //Close run: Save to db
-                    byte[] uuidBytes = pebbleTuples.getBytes(RUN_CLOSE);
-                    ByteBuffer bb = ByteBuffer.wrap(uuidBytes);
-                    UUID uuid = new UUID(bb.getLong(), bb.getLong());
+                    UUID uuid = Util.UUIDFromByteArray(pebbleTuples.getBytes(RUN_CLOSE));
 
                     if(uuid.equals(sentRun.id)) {
                         sentRun.distance = lapCountRecieved * lapLength;
@@ -224,7 +218,7 @@ public class PebbleManager {
                             sentRun.lapTimes[i] = lapTimesBuffer.get(i).getTotalMilliseconds();
                         }
 
-                        RunReaderDbHelper dbHelper = new RunReaderDbHelper(context);
+                        RunDbHelper dbHelper = new RunDbHelper(context);
                         dbHelper.addRun(sentRun);
                         dbHelper.close();
                         sentRun = null;
