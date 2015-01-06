@@ -3,12 +3,19 @@ package com.foxtailgames.pocketrunner.managers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.foxtailgames.pocketrunner.R;
+import com.foxtailgames.pocketrunner.databases.Run;
+import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
 import com.foxtailgames.pocketrunner.utilities.Time;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -19,27 +26,30 @@ import java.util.UUID;
 public class PebbleManager {
 
     private final static UUID PEBBLE_APP_UUID = UUID.fromString("274d5bb8-b7b8-4ff9-b3f2-9b32cee39ad6");
+
     private final static int LAP_LENGTH_KEY = 0;
     private final static int UNITS_KEY = 1;
     private final static int USE_DISTANCE_ALARM_KEY = 2;
     private final static int END_DISTANCE_KEY = 3;
     private final static int END_TIME_KEY = 4;
+    private final static int REQUEST_INITIAL = 5;
 
-    private final static int LAP_ADD_TIME_PEBBLE_KEY = 5;
-    private final static int LAP_ADD_MSG_PHONE_KEY = 6;
-    private final static int PAUSE_TIME_PEBBLE_KEY = 7;
-    private final static int PAUSE_TIME_PHONE_KEY = 8;
+
+    private final static int RUN_OPEN = 6;
+    private final static int RUN_UUID_DEFINE = 7;
+    private final static int RUN_TIME = 8;
+    private final static int RUN_LAPS = 9;
+    private final static int RUN_LAP_TIME = 10;
+    private final static int RUN_UUID_ACK = 11;
+    private final static int RUN_CLOSE = 12;
 
     private final static int INITIAL_DATA_TRANSACTION_ID = 42;
-    private final static int LAP_ADD_PHONE_TRANSACTION_ID = 43;
-    private final static int PAUSE_PHONE_TRANSACTION_ID = 44;
 
     private final static int MAX_RESENDS = 10;
     private final static int WAIT_TIME = 100;
 
     protected int resendCount;
     protected Context context;
-    protected RunManager runManager;
 
     protected double lapLength;
     protected String units;
@@ -47,22 +57,21 @@ public class PebbleManager {
     protected double distanceForAlarm;
     protected long endTime;
 
-    public PebbleManager(Context context, RunManager runManager, double lapLength, String units, boolean useDistanceForAlarm, double distanceForAlarm, Time endTime) {
+    protected Run sentRun;
+    protected ArrayList<Time> lapTimesBuffer;
+    protected long lapCountRecieved;
+
+    public PebbleManager(Context context) {
         this.context = context;
-        this.runManager = runManager;
         this.resendCount = 0;
 
-        this.lapLength = lapLength;
-        this.units = units;
-        this.useDistanceForAlarm = useDistanceForAlarm;
-        this.distanceForAlarm = distanceForAlarm;
-        this.endTime = endTime.getTotalMilliseconds();
+        updateVals();
 
         //Setup Ack's and Nack's and all that
         setupReceiveHandlers();
         PebbleKit.startAppOnPebble(context, PEBBLE_APP_UUID);
         if(PebbleKit.isWatchConnected(context) && PebbleKit.areAppMessagesSupported(context)) {
-            sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime.getTotalMilliseconds());
+            sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
         }
 
         //Check if AppMessages are supported on android
@@ -71,6 +80,20 @@ public class PebbleManager {
         } else {
             Log.i("PebbleManager", "App Message is not supported");
         }
+    }
+
+    public void updateVals() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int hoursEndTime = Integer.parseInt(preferences.getString(context.getString(R.string.time_hours_for_alarm_key), "0"));
+        int minutesEndTime = Integer.parseInt(preferences.getString(context.getString(R.string.time_minutes_for_alarm_key), "0"));
+        int secondsEndTime = Integer.parseInt(preferences.getString(context.getString(R.string.time_minutes_for_alarm_key), "0"));
+        Time endTime = new Time(hoursEndTime, minutesEndTime, secondsEndTime);
+
+        this.lapLength = Double.parseDouble(preferences.getString(context.getString(R.string.lap_length_input_key), "0"));
+        this.units = preferences.getString(context.getString(R.string.units_list_key), "Km");
+        this.useDistanceForAlarm = preferences.getBoolean(context.getString(R.string.use_distance_key), false);
+        this.distanceForAlarm = Double.parseDouble(preferences.getString(context.getString(R.string.distance_for_alarm_key), "0"));
+        this.endTime = endTime.getTotalMilliseconds();
     }
 
     public void setupReceiveHandlers() {
@@ -112,8 +135,12 @@ public class PebbleManager {
                     Log.i("PebbleManager", "INIT: Received not acknowledge. ERROR." + ((resendCount <= MAX_RESENDS) ? " Resending..." : ""));
 
                     //Only resend if its been sent less than MAX_RESENDS times
-                    if(resendCount <= MAX_RESENDS) {
-                        try { Thread.sleep(WAIT_TIME); } catch (InterruptedException e) { System.err.println(e.toString()); }
+                    if (resendCount <= MAX_RESENDS) {
+                        try {
+                            Thread.sleep(WAIT_TIME);
+                        } catch (InterruptedException e) {
+                            System.err.println(e.toString());
+                        }
 
                         sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
                     }
@@ -126,18 +153,63 @@ public class PebbleManager {
             public void receiveData(Context context, int transactionId, PebbleDictionary pebbleTuples) {
                 Log.d("PebbleManager", "Recieved data from pebble");
 
-                if(pebbleTuples.contains(LAP_ADD_TIME_PEBBLE_KEY)) {
-                    Log.d("PebbleManager", "Lap recieved from pebble. Time val: " + pebbleTuples.getInteger(PAUSE_TIME_PEBBLE_KEY));
-                    long time = pebbleTuples.getInteger(LAP_ADD_TIME_PEBBLE_KEY);
-                    runManager.increaseLap(time);
-                }
-                if(pebbleTuples.contains(PAUSE_TIME_PEBBLE_KEY)) {
-                    Log.d("PebbleManager", "Pause recieved from pebble. Time val: " + pebbleTuples.getInteger(PAUSE_TIME_PEBBLE_KEY));
-                    long time = pebbleTuples.getInteger(PAUSE_TIME_PEBBLE_KEY);
-                    runManager.stopClicked();
+                if (pebbleTuples.contains(REQUEST_INITIAL)) {
+                    //Initial data send. Only if pebble requests it
+                    sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
+                } else if (pebbleTuples.contains(RUN_OPEN)) {
 
-                    if(runManager.isPaused())
-                        runManager.setChronometerTime(time);
+                    //Create run and set some values
+                    sentRun = new Run();
+                    sentRun.units = units;
+
+                    //Send the UUID of the run
+                    PebbleDictionary tuples = new PebbleDictionary();
+                    ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+                    bb.putLong(sentRun.id.getMostSignificantBits());
+                    bb.putLong(sentRun.id.getLeastSignificantBits());
+                    tuples.addBytes(RUN_UUID_DEFINE, bb.array());
+
+                } else if (pebbleTuples.contains(RUN_TIME)) {
+                    //Initial data
+                    byte[] uuidBytes = pebbleTuples.getBytes(RUN_UUID_ACK);
+                    ByteBuffer bb = ByteBuffer.wrap(uuidBytes);
+                    UUID uuid = new UUID(bb.getLong(), bb.getLong());
+
+                    if(uuid.equals(sentRun.id)) {
+                        sentRun.time = new Time(pebbleTuples.getInteger(RUN_TIME));
+                        lapCountRecieved = pebbleTuples.getInteger(RUN_LAPS);
+                    }
+
+                } else if (pebbleTuples.contains(RUN_LAP_TIME)) {
+                    //Lap time recieved
+                    byte[] uuidBytes = pebbleTuples.getBytes(RUN_UUID_ACK);
+                    ByteBuffer bb = ByteBuffer.wrap(uuidBytes);
+                    UUID uuid = new UUID(bb.getLong(), bb.getLong());
+
+                    if(uuid.equals(sentRun.id)) {
+                        lapTimesBuffer.add(new Time(pebbleTuples.getInteger(RUN_LAP_TIME)));
+                    }
+
+                } else if (pebbleTuples.contains(RUN_CLOSE)) {
+                    //Close run: Save to db
+                    byte[] uuidBytes = pebbleTuples.getBytes(RUN_CLOSE);
+                    ByteBuffer bb = ByteBuffer.wrap(uuidBytes);
+                    UUID uuid = new UUID(bb.getLong(), bb.getLong());
+
+                    if(uuid.equals(sentRun.id)) {
+                        sentRun.distance = lapCountRecieved * lapLength;
+
+                        Object[] tempLapTimes = lapTimesBuffer.toArray();
+                        sentRun.lapTimes = new long[tempLapTimes.length];
+                        for(int i = 0; i < sentRun.lapTimes.length; i++) {
+                            sentRun.lapTimes[i] = (long)tempLapTimes[i];
+                        }
+
+                        RunReaderDbHelper dbHelper = new RunReaderDbHelper(context);
+                        dbHelper.addRun(sentRun);
+                        dbHelper.close();
+                        sentRun = null;
+                    }
                 }
             }
         });
@@ -153,19 +225,5 @@ public class PebbleManager {
         data.addInt32(END_TIME_KEY, (int) endTime);
 
         PebbleKit.sendDataToPebbleWithTransactionId(context, PEBBLE_APP_UUID, data, INITIAL_DATA_TRANSACTION_ID);
-    }
-
-    public void sendLap() {
-        PebbleDictionary data = new PebbleDictionary();
-        data.addInt8(LAP_ADD_MSG_PHONE_KEY, (byte)1);
-
-        PebbleKit.sendDataToPebbleWithTransactionId(context, PEBBLE_APP_UUID, data, LAP_ADD_PHONE_TRANSACTION_ID);
-    }
-
-    public void sendPause(int time) {
-        PebbleDictionary data = new PebbleDictionary();
-        data.addInt32(PAUSE_TIME_PHONE_KEY, time);
-
-        PebbleKit.sendDataToPebbleWithTransactionId(context, PEBBLE_APP_UUID, data, PAUSE_PHONE_TRANSACTION_ID);
     }
 }
