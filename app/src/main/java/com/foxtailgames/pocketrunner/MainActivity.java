@@ -1,5 +1,7 @@
 package com.foxtailgames.pocketrunner;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -21,6 +23,9 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    protected boolean goToSettings;
+    protected AlertDialog goToSettingsDialog;
 
     /*==============================================================================
       ========================== OVERRIDEN METHODS =================================
@@ -78,6 +83,7 @@ public class MainActivity extends ActionBarActivity {
       ==============================================================================*/
     void setTotalDistance()
     {
+        goToSettings = false;
         String units;
         double total = 0;
         String text;
@@ -106,11 +112,12 @@ public class MainActivity extends ActionBarActivity {
             findViewById(R.id.total_distance_title).setVisibility(View.INVISIBLE);
 
             // Settings not set
-            if(sharedPreferences.getString(getString(R.string.units_list_key), null) == null)
+            if(sharedPreferences.getString(getString(R.string.units_list_key), null) == null) {
                 text = getString(R.string.go_to_settings);
-            else
+                goToSettings = true;
+            } else {
                 text = getString(R.string.go_for_a_run);
-
+            }
 
         } else {
             //Show the title
@@ -140,8 +147,24 @@ public class MainActivity extends ActionBarActivity {
       =============================================================================*/
 
     public void startRun(View view) {
-        Intent intent = new Intent(getApplicationContext(), RunActivity.class);
-        startActivity(intent);
+        if(goToSettings) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cant_run)
+                    .setMessage(R.string.go_to_settings)
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Do nothing. Nothing has to be done...
+                        }
+                    });
+
+            goToSettingsDialog = builder.create();
+            goToSettingsDialog.show();
+        } else {
+            Intent intent = new Intent(getApplicationContext(), RunActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void openStatistics(View view) {

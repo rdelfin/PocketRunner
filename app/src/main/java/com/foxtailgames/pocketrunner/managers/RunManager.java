@@ -181,12 +181,10 @@ public class RunManager {
     private double distanceRun() { return lapCount * lapLength; }
 
     public String getRemainingText() {
-        String result = "";
+        String result;
 
         if(useDistanceForAlarm) {
-            result += distanceRun() + " " + units;
-            result += " / ";
-            result += distanceForAlarm + " " + units;
+            result = String.format("%.2f %s / %.2f %s", distanceRun(), units, distanceForAlarm, units);
         } else {
             result = endTime.toString();
         }

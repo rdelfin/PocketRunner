@@ -35,5 +35,6 @@
     <string name="alarm_dialog_title">Done!</string>
     <string name="invalid">Invalid!</string>
     <string name="no_run_message">You have not run! Either go back or run</string>
+    <string name="cant_run">You can\'t run yet</string>
 
 </resources>
