@@ -61,6 +61,16 @@ public class PebbleManager {
     protected ArrayList<Time> lapTimesBuffer;
     protected long lapCountRecieved;
 
+
+    //Singleton!
+    private static PebbleManager instance = null;
+    public static PebbleManager getInstance(Context context) {
+        if(instance == null)
+            instance = new PebbleManager(context);
+        return instance;
+    }
+
+
     public PebbleManager(Context context) {
         this.context = context;
         this.resendCount = 0;
@@ -69,6 +79,7 @@ public class PebbleManager {
 
         //Setup Ack's and Nack's and all that
         setupReceiveHandlers();
+
         PebbleKit.startAppOnPebble(context, PEBBLE_APP_UUID);
         if(PebbleKit.isWatchConnected(context) && PebbleKit.areAppMessagesSupported(context)) {
             sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
@@ -82,7 +93,12 @@ public class PebbleManager {
         }
     }
 
-    public void updateVals() {
+    public void updateValsAndSend() {
+        updateVals();
+        sendData(lapLength, units, useDistanceForAlarm, distanceForAlarm, endTime);
+    }
+
+    private void updateVals() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         int hoursEndTime = Integer.parseInt(preferences.getString(context.getString(R.string.time_hours_for_alarm_key), "0"));
         int minutesEndTime = Integer.parseInt(preferences.getString(context.getString(R.string.time_minutes_for_alarm_key), "0"));
@@ -96,7 +112,7 @@ public class PebbleManager {
         this.endTime = endTime.getTotalMilliseconds();
     }
 
-    public void setupReceiveHandlers() {
+    private void setupReceiveHandlers() {
        PebbleKit.registerPebbleConnectedReceiver(context, new BroadcastReceiver() {
            @Override
            public void onReceive(Context context, Intent intent) {
@@ -215,7 +231,7 @@ public class PebbleManager {
         });
     }
 
-    public void sendData(double lapLength, String units, boolean useDistanceForAlarm, double distanceForAlarm, long endTime) {
+    private void sendData(double lapLength, String units, boolean useDistanceForAlarm, double distanceForAlarm, long endTime) {
         //Send information to app
         PebbleDictionary data = new PebbleDictionary();
         data.addString(LAP_LENGTH_KEY, String.valueOf(lapLength));

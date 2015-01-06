@@ -18,6 +18,8 @@ import android.support.v4.app.NavUtils;
 import android.widget.Toast;
 
 
+import com.foxtailgames.pocketrunner.managers.PebbleManager;
+
 import java.util.List;
 
 /**
@@ -44,6 +46,13 @@ public class SettingsActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+    }
+
+    @Override
+    protected  void onStop() {
+        super.onStop();
+
+        PebbleManager.getInstance(getApplicationContext()).updateValsAndSend();
     }
 
     /**

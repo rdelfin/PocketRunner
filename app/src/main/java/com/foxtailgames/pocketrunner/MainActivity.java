@@ -1,6 +1,5 @@
 package com.foxtailgames.pocketrunner;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.foxtailgames.pocketrunner.databases.Run;
 import com.foxtailgames.pocketrunner.databases.RunReaderDbHelper;
+import com.foxtailgames.pocketrunner.managers.PebbleManager;
 import com.foxtailgames.pocketrunner.utilities.ConversionValues;
 import com.foxtailgames.pocketrunner.utilities.UnitDoesNotExistException;
 
@@ -32,6 +32,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         setTotalDistance();
+        PebbleManager.getInstance(getApplicationContext());
     }
 
 
