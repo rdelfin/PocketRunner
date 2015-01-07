@@ -17,9 +17,9 @@
     <string name="resume">Resume</string>
     <string name="done">Done</string>
     <string name="laps">Laps</string>
-    <string name="zero_time">00:00:00</string>
+    <string name="zero_time" translatable="false">00:00:00</string>
     <string name="default_average_speed">00:00:00 per Km</string>
-    <string name="default_portion_done">00.00 Km / 00.00 Km</string>
+    <string name="default_portion_done" translatable="false">00.00 Km / 00.00 Km</string>
     <string name="default_lap_count">0 laps</string>
     <string name="alarm_dialog_message">You finished your run!</string>
     <string name="dialog_button_text">Done</string>
@@ -28,7 +28,7 @@
     <string name="connection_not_completed_toast">Connection with Pebble could not be completed</string>
     <string name="title_activity_statistics">Statistics</string>
     <string name="total_distance_ran">You\'ve run</string>
-    <string name="default_distance_ran">0 km</string>
+    <string name="default_distance_ran">0 Km</string>
     <string name="run_list_title_text">Runs:</string>
     <string name="go_to_settings">Go to settings!</string>
     <string name="go_for_a_run">Go out for a run!</string>

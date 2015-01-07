@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lap_length_input_key">lap_length_input</string>
-    <string name="units_list_key">units_list</string>
-    <string name="use_distance_key">use_distance</string>
-    <string name="distance_for_alarm_key">distance_for_alarm</string>
-    <string name="time_hours_for_alarm_key">time_hours_for_alarm</string>
-    <string name="time_minutes_for_alarm_key">time_minutes_for_alarm</string>
-    <string name="time_seconds_for_alarm_key">time_seconds_for_alarm</string>
+    <string name="lap_length_input_key" translatable="false">lap_length_input</string>
+    <string name="units_list_key" translatable="false">units_list</string>
+    <string name="use_distance_key" translatable="false">use_distance</string>
+    <string name="distance_for_alarm_key" translatable="false">distance_for_alarm</string>
+    <string name="time_hours_for_alarm_key" translatable="false">time_hours_for_alarm</string>
+    <string name="time_minutes_for_alarm_key" translatable="false">time_minutes_for_alarm</string>
+    <string name="time_seconds_for_alarm_key" translatable="false">time_seconds_for_alarm</string>
 </resources>
