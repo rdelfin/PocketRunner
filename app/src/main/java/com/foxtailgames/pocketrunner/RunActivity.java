@@ -8,7 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.foxtailgames.pocketrunner.managers.AnalyticsManager;
 import com.foxtailgames.pocketrunner.managers.RunManager;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import gr.antoniom.chronometer.PreciseChronometer;
 
@@ -24,8 +27,15 @@ public class RunActivity extends ActionBarActivity {
         setContentView(R.layout.activity_run);
         running = false;
         started = false;
-        runManager = new RunManager(this, getApplicationContext(), (PreciseChronometer)findViewById(R.id.chrono_label));
+        runManager = new RunManager(this, (PreciseChronometer)findViewById(R.id.chrono_label));
         updateAll();
+
+
+        //Tracking for google analytics
+        Tracker t = AnalyticsManager.getInstance(getApplicationContext())
+                .getTracker(AnalyticsManager.TrackerName.APP_TRACKER);
+        t.setScreenName(getPackageName() + "." + getLocalClassName());
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
 
 

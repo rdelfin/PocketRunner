@@ -73,7 +73,7 @@ public class PebbleManager {
     }
 
 
-    public PebbleManager(Context context) {
+    private PebbleManager(Context context) {
         this.context = context;
         this.resendCount = 0;
 

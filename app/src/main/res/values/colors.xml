@@ -4,10 +4,11 @@
     <color name="top_background">#33D633</color>
     <color name="middle_background">#FFF</color>
     <color name="bottom_background">#FFF</color>
-    <color name="stop_button_color">#F00</color>
     <color name="average_speed_background">#FDD</color>
     <color name="lap_button_background">#090</color>
     <color name="divider_line_color">#999</color>
     <color name="lap_button_color">#99CC00</color>
-    <color name="start_button_color">#FF4444</color>
+    <color name="lap_button_pressed_color">#6B8F00</color>
+    <color name="stop_button_color">#FF4444</color>
+    <color name="stop_button_pressed_color">#B23030</color>
 </resources>

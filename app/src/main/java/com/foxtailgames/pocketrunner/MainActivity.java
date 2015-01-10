@@ -15,9 +15,12 @@ import android.widget.TextView;
 
 import com.foxtailgames.pocketrunner.databases.Run;
 import com.foxtailgames.pocketrunner.databases.RunDbHelper;
+import com.foxtailgames.pocketrunner.managers.AnalyticsManager;
 import com.foxtailgames.pocketrunner.managers.PebbleManager;
 import com.foxtailgames.pocketrunner.utilities.ConversionValues;
 import com.foxtailgames.pocketrunner.utilities.UnitDoesNotExistException;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.List;
 
@@ -37,7 +40,13 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         setTotalDistance();
-        PebbleManager.getInstance(getApplicationContext());
+        PebbleManager.getInstance(this);
+
+        //Tracking for google analytics
+        Tracker t = AnalyticsManager.getInstance(getApplicationContext())
+                .getTracker(AnalyticsManager.TrackerName.APP_TRACKER);
+        t.setScreenName(getPackageName() + "." + getLocalClassName());
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
 
 

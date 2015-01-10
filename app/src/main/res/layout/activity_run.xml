@@ -21,7 +21,7 @@
             android:padding="@dimen/stop_padding"
             android:textSize="@dimen/extra_large_font_size"
             android:layout_gravity="center_horizontal"
-            android:background="@color/start_button_color"
+            android:background="@drawable/stop_button_background"
             android:onClick="stopClicked" />
 
         <gr.antoniom.chronometer.PreciseChronometer
@@ -87,7 +87,7 @@
         android:text="@string/done"
         android:gravity="center"
         android:textSize="@dimen/extra_large_font_size"
-        android:background="@color/lap_button_color"
+        android:background="@drawable/lap_button_background"
         android:onClick="lapClicked" />
 
 </RelativeLayout>

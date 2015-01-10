@@ -45,7 +45,6 @@ public class RunManager {
 
 
     protected RunActivity activity;
-    protected Context context;
 
     protected boolean alarmTriggered;
     protected AlertDialog alarmDialog;
@@ -54,8 +53,8 @@ public class RunManager {
 
     protected RunDbHelper dbHelper;
 
-    public RunManager(RunActivity activity, Context context, PreciseChronometer chronometer) {
-        updatePreferences(context);
+    public RunManager(RunActivity activity, PreciseChronometer chronometer) {
+        updatePreferences(activity);
         this.chronometer = chronometer;
         this.timeChronoStopped = 0;
         this.running = false;
@@ -63,12 +62,11 @@ public class RunManager {
         this.lapCount = 0;
         this.timeLastLap = 0;
         this.activity = activity;
-        this.context = context;
         this.alarmDialog = null;
-        this.vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+        this.vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
         this.alarmTriggered = false;
         this.lapTimes = new LinkedList<>();
-        this.dbHelper = new RunDbHelper(context);
+        this.dbHelper = new RunDbHelper(activity);
         this.done = false;
 
         //Handler for the chronometer
@@ -200,7 +198,7 @@ public class RunManager {
             time = new Time(0);
         else
             time = new Time(Math.round((double)timeLastLap / (lapLength * lapCount)));
-        return time.toString() + " " + context.getString(R.string.per) + " " + units;
+        return time.toString() + " " + activity.getString(R.string.per) + " " + units;
     }
 
     public void showNoRunMessage() {

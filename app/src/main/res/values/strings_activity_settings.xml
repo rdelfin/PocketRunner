@@ -12,7 +12,7 @@
         <item>Kilometers</item>
         <item>Miles</item>
     </string-array>
-    <string-array name="units_list_vals">
+    <string-array name="units_list_vals" translatable="false">
         <item>m</item>
         <item>ft</item>
         <item>Km</item>
