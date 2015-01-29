@@ -1,5 +1,6 @@
 PocketRunner
 ============
+[![forthebadge](http://forthebadge.com/images/badges/fuck-it-ship-it.svg)](http://forthebadge.com)
 
 Running App used to manage lap, times, and keep activities on track. Contains four activities to interact with the user: a `RunActivity` where most of the user interaction will take place, a `SettingsActivity` where the user will set up the run so that it works acording to the user specifications, a `StatisticsActivity` where all run statistics will be displayed (currently, it only lists each run and displays some basic information about each) and a `MainActivity`, where the user can navigate to any of these other activities.
 
